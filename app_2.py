@@ -4,7 +4,7 @@ import streamlit as st
 from base_1 import retrieval_qa_chain, create_vector_db
 import base64           # to read the pdf
 import yaml
-
+import timeit
 def pdf_loader(tmp_file_path):
     loader = PyPDFLoader(file_path=tmp_file_path)
     return loader
@@ -35,9 +35,9 @@ def main():
             "CHUNK_SIZE": list(range(50, 1001)),  # Extend chunk size range from 50 to 1000
             "CHUNK_OVERLAP": list(range(0, 51)),   # Extend chunk overlap range from 0 to 50
             "DB_FAISS_PATH": "db_faiss/",
-            "MODEL_TYPE": ["mistral", "llama"],
-            "MODEL_BIN_PATH": ["models/mistral-7b-instruct-v0.1.Q5_K_M.gguf", 'models/llama-2-7b-chat.ggmlv3.q8_0.bin', "models/Mistral-7B-Instruct-v0.1-GGUF/tree/main", "models/Mistral-7B-Instruct-v0.2-GGUF/tree/main"],
-            "EMBEDDINGS": ["sentence-transformers/all-mpnet-base-v2", "sentence-transformers/all-MiniLM-L6-v2"],
+            "MODEL_TYPE": ["llama", "mistral"],
+            "MODEL_BIN_PATH": ['models/llama-2-7b-chat.ggmlv3.q8_0.bin', "models/Mistral-7B-Instruct-v0.1-GGUF/tree/main", "models/Mistral-7B-Instruct-v0.2-GGUF/tree/main"],
+            "EMBEDDINGS": [ "sentence-transformers/all-MiniLM-L6-v2", "sentence-transformers/all-mpnet-base-v2"],
             "MAX_NEW_TOKENS": [512, 1024, 2048],
             "TEMPERATURE": [round(i * 0.01, 2) for i in range(0, 101)]  # Extend temperature range from 0.00 to 1.00
         }
@@ -89,12 +89,16 @@ def main():
     query = st.text_input("Ask the Question")
     if st.button("Submit"):
         if query:
+            start_time = timeit.default_timer()
             chain = retrieval_qa_chain()
             result = chain(query)
 
             output = result.get("result") if result else None
             if output:
                 st.write("Result:", output)
+                st.write('=' * 50)
+                end_time = timeit.default_timer()
+                st.write(f"Time to retrieve answer: {end_time - start_time}")
             st.session_state.messages.append({"role": "user", "content": query})
             st.session_state.messages.append({"role": "assistant", "content": output})
 

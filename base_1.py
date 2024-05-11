@@ -13,12 +13,20 @@ import box
 import yaml
 
 
-# Import config vars
-with open('config.yml', 'r', encoding='utf8') as ymlfile:
-    cfg = box.Box(yaml.safe_load(ymlfile))
-
+def load_config(config_file_path):
+    with open(config_file_path, 'r', encoding='utf8') as ymlfile:
+        cfg = box.Box(yaml.safe_load(ymlfile))
+    return cfg
 
 def create_vector_db(loader):
+    cfg = load_config('config.yml')
+    
+    if not os.path.exists(cfg.DB_FAISS_PATH):
+        os.makedirs(cfg.DB_FAISS_PATH)
+        print("DB Fiass Folder created successfully")
+    else:
+        print("DB Faiss Folder already exists")
+        
     data = loader.load()
    
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=cfg.CHUNK_SIZE, chunk_overlap=cfg.CHUNK_OVERLAP)
@@ -31,15 +39,14 @@ def create_vector_db(loader):
     db.save_local(cfg.DB_FAISS_PATH)    
     
 def load_llm():
+    cfg = load_config('config.yml')
     llm = CTransformers(model=cfg.MODEL_BIN_PATH,
-                        model_type=cfg.MODEL_TYPE,
-                        max_new_tokens=cfg.MAX_NEW_TOKENS,
-                        temperature=cfg.TEMPERATURE
+                        model_type=cfg.MODEL_TYPE
     )
     return llm    
 
 def retrieval_qa_chain():
-
+    cfg = load_config('config.yml')
     embeddings = HuggingFaceEmbeddings(model_name=cfg.EMBEDDINGS,
                                        model_kwargs={'device': 'cpu'})
     db=FAISS.load_local(cfg.DB_FAISS_PATH, embeddings)

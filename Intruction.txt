@@ -3,21 +3,30 @@ Need to dwonload the llama2 model and save in locally link: https://huggingface.
 https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.1-GGUF/tree/main
 https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.2-GGUF/tree/main
 
-mention the model in model_path  = "\copy the model_path\"
-
-
-there is two python file 
-1)app_2.py 
-2)base_1.py
+put the download model into "models" folder 
 
 
 create conda environment with dependency present in requirements.txt file:-
 
-- Open app_2.py file:- (streamlit UI Interface)
+there is two python file 
+1)base_1.py
+2)app_2.py 
 
-_ Open base_1.py file (streamlit UI Interface)
-                          	in that there is a two function 
+
+_ Open base_1.py file
+
+        in that there is a two function 
 		1)create_vector_db()
 		2)retrieval_qa_chain()
 	First call create_vector_db() funtion (It create the embedding and directly save in locally)
-	second call retrieval_qa_chain() function (To train the model set up the langchain with llama2 model )
+	second call retrieval_qa_chain() function (To train the model set up the langchain with llama2 model or mistral which you want to choose )
+	
+- Open app_2.py file:- (streamlit UI Interface) # streamlit run app_2.py
+
+        Configuration File Generator: In the sidebar, users can generate a configuration file by selecting various options like whether to return source documents,
+         vector count, chunk size, model type, etc. These options are defined in the options dictionary. Users can select values for each option, and 
+         upon clicking "Save Configuration," a YAML file (config.yml) is generated with the selected settings.
+         
+        PDF Upload: Users can upload a PDF file 
+        
+        
