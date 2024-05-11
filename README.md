@@ -27,4 +27,6 @@ https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.2-GGUF/tree/main
 streamlit run app_2.py
 ```
 ## Application Preview :
-![image]((https://github.com/subhajyotirkmveri/multi_modal_qs_answering_app/blob/main/asset/asset.jpeg))
+
+![image](https://github.com/subhajyotirkmveri/multi_modal_qs_answering_app/blob/main/asset/asset.jpeg)
+
