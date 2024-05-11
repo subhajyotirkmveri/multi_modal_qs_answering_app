@@ -45,18 +45,8 @@ def load_llm():
     )
     return llm    
 
-def retrieval_qa_chain():
-    cfg = load_config('config.yml')
-    embeddings = HuggingFaceEmbeddings(model_name=cfg.EMBEDDINGS,
-                                       model_kwargs={'device': 'cpu'})
-    db=FAISS.load_local(cfg.DB_FAISS_PATH, embeddings)
-    #retriever =db.as_retriever(score_threshold=0.7)
-    retriever=db.as_retriever(search_kwargs={'k': cfg.VECTOR_COUNT})
-    
-    llm = load_llm()
-    
-    # Define the prompt template
-    qa_template = """Use the following pieces of information to answer the user's question.
+# Define the prompt template
+prompt_template = """Use the following pieces of information to answer the user's question.
     Try to provide as much text as possible from "response". If you don't know the answer, please just say 
     "I don't know the answer". Don't try to make up an answer.
     
@@ -64,15 +54,36 @@ def retrieval_qa_chain():
     Question: {question}
     
     Only return correct and helpful answer below and nothing else.
-    Helpful answer: """
+    Helpful answer:
+"""
 
-    PROMPT = PromptTemplate(template=qa_template, input_variables=["context", "question"])
+def set_qa_prompt():
+    prompt = PromptTemplate(template=prompt_template, input_variables=["context", "question"])
+    return prompt
+
+
+def retrieval_qa_chain(llm, prompt):
+    cfg = load_config('config.yml')
+    embeddings = HuggingFaceEmbeddings(model_name=cfg.EMBEDDINGS,
+                                       model_kwargs={'device': 'cpu'})
+    db=FAISS.load_local(cfg.DB_FAISS_PATH, embeddings)
+    #retriever =db.as_retriever(score_threshold=0.7)
+    retriever=db.as_retriever(search_kwargs={'k': cfg.VECTOR_COUNT})
+    
                                         
     chain = RetrievalQA.from_chain_type(llm=llm,
                                            chain_type='stuff',
                                            retriever=retriever,
                                            input_key="query",
                                            return_source_documents=cfg.RETURN_SOURCE_DOCUMENTS,
-                                           chain_type_kwargs={'prompt': PROMPT})
+                                           chain_type_kwargs={'prompt': prompt})
+    return chain
+    
+    
+def setup_qa_chain():
+    llm = load_llm()
+    qa_prompt = set_qa_prompt()
+    chain = retrieval_qa_chain(llm, qa_prompt)
+
     return chain
 

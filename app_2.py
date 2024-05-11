@@ -1,7 +1,7 @@
 from langchain.document_loaders import PyPDFLoader, DirectoryLoader
 import tempfile
 import streamlit as st
-from base_1 import retrieval_qa_chain, create_vector_db
+from base_1 import retrieval_qa_chain, create_vector_db, setup_qa_chain
 import base64           # to read the pdf
 import yaml
 import timeit
@@ -90,15 +90,15 @@ def main():
     if st.button("Submit"):
         if query:
             start_time = timeit.default_timer()
-            chain = retrieval_qa_chain()
-            result = chain(query)
+            chain = setup_qa_chain()
+            result = chain({'query': query})
 
             output = result.get("result") if result else None
             if output:
                 st.write("Result:", output)
                 st.write('=' * 50)
                 end_time = timeit.default_timer()
-                st.write(f"Time to retrieve answer: {end_time - start_time}")
+                st.write("Time to retrieve answer:", end_time - start_time, "sec")
             st.session_state.messages.append({"role": "user", "content": query})
             st.session_state.messages.append({"role": "assistant", "content": output})
 
