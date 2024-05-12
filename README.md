@@ -28,5 +28,5 @@ streamlit run app_2.py
 ```
 ## Application Preview :
 
-![image](https://github.com/subhajyotirkmveri/multi_modal_qs_answering_app/blob/main/asset/asset.jpeg)
-
+![image](https://github.com/subhajyotirkmveri/multi_modal_qs_answering_app/blob/main/asset/asset_1.jpeg)
+![image](https://github.com/subhajyotirkmveri/multi_modal_qs_answering_app/blob/main/asset/asset_2.jpeg)
