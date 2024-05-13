@@ -5,7 +5,7 @@
  ```
 2. Go to the cloning folder
 ```
-cd summarization_app
+cd multi_modal_qs_answering_app
 ```
 3. Install all the depenedencies :
    
